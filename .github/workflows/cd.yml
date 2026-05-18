@@ -32,27 +32,35 @@ jobs:
 
             docker --version
 
-            docker compose version || docker-compose --version
+            docker-compose --version
 
-            if [ ! -d ~/Three-tier-app-Action ]; then
-              git clone https://github.com/Abhi-Sangawade/Three-tier-app-Action.git ~/Three-tier-app-Action
-            fi
+            echo "===== REMOVE OLD REPO ====="
+
+            rm -rf ~/Three-tier-app-Action
+
+            echo "===== CLONE REPOSITORY ====="
+
+            git clone https://github.com/Abhi-Sangawade/Three-tier-app-Action.git ~/Three-tier-app-Action
 
             cd ~/Three-tier-app-Action
 
-            git pull origin main
+            echo "===== CREATE ENV FILE ====="
+
+            cat > .env <<EOF
+            DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}
+            MYSQL_ROOT_PASSWORD=root123
+            DB_NAME=skillpulse
+            DB_USER=skilluser
+            DB_PASSWORD=skillpass
+            EOF
 
             echo "===== FILES ====="
 
             ls -la
 
-            echo "===== DOCKER COMPOSE FILE ====="
-
-            cat docker-compose.yml
-
             echo "===== STARTING CONTAINERS ====="
 
-            docker compose up -d --build
+            docker-compose up -d
 
             echo "===== RUNNING CONTAINERS ====="
 
@@ -60,6 +68,6 @@ jobs:
 
             echo "===== CONTAINER LOGS ====="
 
-            docker compose logs --tail=50
+            docker-compose logs --tail=50
 
             echo "===== END DEPLOY ====="

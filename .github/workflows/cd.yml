@@ -26,7 +26,13 @@ jobs:
 
           script: |
 
+            echo "===== START DEPLOY ====="
+
             sudo systemctl start docker
+
+            docker --version
+
+            docker compose version || docker-compose --version
 
             if [ ! -d ~/Three-tier-app-Action ]; then
               git clone https://github.com/Abhi-Sangawade/Three-tier-app-Action.git ~/Three-tier-app-Action
@@ -36,6 +42,24 @@ jobs:
 
             git pull origin main
 
+            echo "===== FILES ====="
+
+            ls -la
+
+            echo "===== DOCKER COMPOSE FILE ====="
+
+            cat docker-compose.yml
+
+            echo "===== STARTING CONTAINERS ====="
+
             docker compose up -d --build
 
-            docker ps
+            echo "===== RUNNING CONTAINERS ====="
+
+            docker ps -a
+
+            echo "===== CONTAINER LOGS ====="
+
+            docker compose logs --tail=50
+
+            echo "===== END DEPLOY ====="

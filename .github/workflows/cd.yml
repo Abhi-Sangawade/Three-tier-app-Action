@@ -5,28 +5,42 @@ on:
     workflows: ["CI"]
     types: [completed]
     branches: [main]
-  workflow_dispatch: 
+
+  workflow_dispatch:
+
 jobs:
+
   deploy:
     if: ${{ github.event.workflow_run.conclusion == 'success' && vars.DEPLOY_ENABLED == 'true' }}
+
     runs-on: ubuntu-latest
+
     steps:
+
       - uses: appleboy/ssh-action@v1
+
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
+
           script: |
-            if [ ! -d ~/github-actions-kubernetes-masterclass ]; then
-              git clone ${{ github.server_url }}/${{ github.repository }}.git ~/github-actions-kubernetes-masterclass
+
+            if [ ! -d ~/Three-tier-app-Action ]; then
+              git clone https://github.com/Abhi-Sangawade/Three-tier-app-Action.git ~/Three-tier-app-Action
             fi
-            cd ~/github-actions-kubernetes-masterclass
+
+            cd ~/Three-tier-app-Action
+
             git pull origin main
+
             if [ ! -f .env ]; then
-              echo "ERROR: ~/github-actions-kubernetes-masterclass/.env is missing. Create it once with DOCKERHUB_USERNAME and DB credentials."
+              echo "ERROR: ~/Three-tier-app-Action/.env is missing."
               exit 1
             fi
-            docker compose pull
-            docker compose up -d
-            docker image prune -f
 
+            docker compose pull
+
+            docker compose up -d
+
+            docker image prune -f

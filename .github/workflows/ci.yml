@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: checkout-code
     steps:
-      - name: Checkout Repository
+      - name: Checkout Repository        # ← THIS was missing, caused your error
         uses: actions/checkout@v3
 
       - name: Set up Docker Buildx
